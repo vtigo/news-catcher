@@ -1,0 +1,6 @@
+- [ ] Terminal UI
+- [ ] CLI para funções isoladas
+- [ ] One shot catch - salvar os dados em um arquivo, depois podemos dar suporte para outras formas de consumo dos dados
+- [ ] Configuração de fonte de dados
+- [ ] Buscar em múltiplas fontes
+- [ ] Cronjob -> catch -> email

@@ -1,31 +1,30 @@
 package rss
 
-type FeedCollector interface {
-	Collect(document RSSDocument) (*FeedCollection, error)
-}
-
 type FeedCollection struct {
-	Feeds []Feed
-}
-
-type Feed struct {
-	Name  string
 	Items []Item
+	Feeds []FeedMetadata
 }
 
-func (fc *FeedCollection) Collect(document RSSDocument) (*FeedCollection, error) {
-	var name string
-	var items []Item
+type FeedMetadata struct {
+	Name  string
+	Start int
+	Count int
+}
 
-	name = document.Channel.Title
-	items = append(items, document.Channel.Items...)
+func NewFeedCollection() *FeedCollection {
+	return &FeedCollection{
+		Items: make([]Item, 0, 100),
+		Feeds: make([]FeedMetadata, 0, 10),
+	}
+}
 
-	fc.Feeds = append(fc.Feeds, Feed{
-		Name:  name,
-		Items: items,
+func CollectDocument(fc *FeedCollection, document RSSDocument) {
+	start := len(fc.Items)
+	fc.Items = append(fc.Items, document.Channel.Items...)
+
+	fc.Feeds = append(fc.Feeds, FeedMetadata{
+		Name:  document.Channel.Title,
+		Start: start,
+		Count: len(document.Channel.Items),
 	})
-
-	return fc, nil
 }
-
-// TODO: Criar a coleção a partir de um documento RSS, com a função Collect podemos adicionar mais documentos a coleção

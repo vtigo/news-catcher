@@ -18,7 +18,7 @@ func NewFeedCollection() *FeedCollection {
 	}
 }
 
-func CollectDocument(fc *FeedCollection, document RSSDocument) {
+func (fc *FeedCollection) CollectDocument(document RSSDocument) {
 	start := len(fc.Items)
 	fc.Items = append(fc.Items, document.Channel.Items...)
 

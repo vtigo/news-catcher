@@ -57,7 +57,7 @@ func main() {
 	for range endpoints {
 		feed := <-results
 		if feed != nil {
-			rss.CollectDocument(collection, *feed)
+			collection.CollectDocument(*feed)
 		}
 	}
 

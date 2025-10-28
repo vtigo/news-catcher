@@ -28,3 +28,5 @@ func (fc *FeedCollection) CollectDocument(document *RSSDocument) {
 		Count: len(document.Channel.Items),
 	})
 }
+
+// TODO: Função para converter uma collection em um JSON (name: items)

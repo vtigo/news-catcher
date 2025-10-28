@@ -5,3 +5,4 @@
 - [ ] Buscar em múltiplas fontes
 - [ ] Cronjob -> catch -> email
 - [ ] Catch Metadata
+- [ ] Api

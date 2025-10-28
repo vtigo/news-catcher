@@ -6,28 +6,28 @@ import (
 	"encoding/xml"
 	"io"
 	"log"
-	"net/http"
 	"os"
 	"strings"
+	"time"
 
+	"github.com/vtigo/news-catcher/fetcher"
 	"github.com/vtigo/news-catcher/rss"
 )
+
+// TODO: pegar o endpoint do arquivo de config
+// TODO: pegar múltiplas fontes
 
 func main() {
 	endpoint := "https://revistacult.uol.com.br/feed/"
 
-	resp, err := http.Get(endpoint)
-	if err != nil {
-		log.Fatalln("failed to get endpoint: ", err)
-	}
-
-	defer resp.Body.Close()
+	fetcher := fetcher.NewClient(
+		fetcher.WithTimeout(15 * time.Second),
+	)
 
 	// Um feed RSS é um documento XML, temos o xml bruto (bytes) no corpo da resposta
-	body, err := io.ReadAll(resp.Body)
+	responseData, err := fetcher.Fetch(endpoint)
 	if err != nil {
-		log.Fatalln("failed to read response body: ", err)
-
+		log.Fatalln("failed to fetch feed: ", err)
 	}
 
 	// Precisamos:
@@ -36,7 +36,7 @@ func main() {
 	// 	3.Mapear para um struct
 
 	// reader são os bytes contendo o XML
-	reader := bytes.NewReader(body)
+	reader := bytes.NewReader(responseData)
 
 	// passamos os bytes para um decoder de XML
 	decoder := xml.NewDecoder(reader)

@@ -22,8 +22,7 @@ func main() {
 	}
 
 	fetcher := fetcher.NewClient(
-		fetcher.WithTimeout(10*time.Second),
-		fetcher.WithMaxBytes(5*1024*1024),
+		fetcher.WithMaxBytes(5 * 1024 * 1024),
 	)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
@@ -57,7 +56,7 @@ func main() {
 	for range endpoints {
 		feed := <-results
 		if feed != nil {
-			collection.CollectDocument(*feed)
+			collection.CollectDocument(feed)
 		}
 	}
 

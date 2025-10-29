@@ -1,5 +1,7 @@
 package rss
 
+import "encoding/json"
+
 type FeedCollection struct {
 	Items []Item
 	Feeds []FeedMetadata
@@ -29,4 +31,26 @@ func (fc *FeedCollection) CollectDocument(document *RSSDocument) {
 	})
 }
 
-// TODO: Função para converter uma collection em um JSON (name: items)
+func (fc *FeedCollection) MapItems() (map[string][]Item, error) {
+	items := make(map[string][]Item, len(fc.Feeds))
+
+	for _, feed := range fc.Feeds {
+		items[feed.Name] = fc.Items[feed.Start : feed.Start+feed.Count]
+	}
+
+	return items, nil
+}
+
+func (fc *FeedCollection) MapItemsJSON() ([]byte, error) {
+	items, err := fc.MapItems()
+	if err != nil {
+		return nil, err
+	}
+
+	json, err := json.MarshalIndent(items, "", " ")
+	if err != nil {
+		return nil, err
+	}
+
+	return json, nil
+}

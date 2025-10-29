@@ -2,23 +2,21 @@ package main
 
 import (
 	"context"
-	"encoding/json"
+	"fmt"
 	"log"
-	"os"
 	"time"
 
 	"github.com/vtigo/news-catcher/fetcher"
 	"github.com/vtigo/news-catcher/rss"
+	"github.com/vtigo/news-catcher/storage"
 )
 
 // TODO: pegar o endpoint do arquivo de config
-// TODO: pegar múltiplas fontes
 
 func main() {
 	endpoints := []string{
 		"https://revistacult.uol.com.br/feed/",
 		"https://feeds.folha.uol.com.br/poder/rss091.xml",
-		"https://catracalivre.com.br/feed/",
 	}
 
 	fetcher := fetcher.NewClient(
@@ -39,6 +37,8 @@ func main() {
 				results <- nil
 				return
 			}
+
+			// TODO: Checar se é um feed RSS antes de continuar
 
 			feed, err := rss.UnmarshalXML(responseData)
 			if err != nil {
@@ -62,16 +62,20 @@ func main() {
 
 	close(results)
 
-	// Convertemos os itens em um slice de bytes que representa uma string JSON formatada
-	jsonData, err := json.MarshalIndent(collection.Items, "", " ")
+	collectionJSON, err := collection.MapItemsJSON()
 	if err != nil {
-		log.Fatalln("failed to marshal feed data into json: ", err)
+		log.Fatalln("failed to map items to json: ", err)
 	}
 
-	// Gravamos os bytes em um arquivo json
-	err = os.WriteFile("feed-items.json", jsonData, 0644)
+	storage := storage.NewFileSystemStorage("data")
+
+	now := time.Now()
+	filename := fmt.Sprintf("feed-%v.json", now.Unix())
+
+	filepath, err := storage.Store(filename, collectionJSON)
 	if err != nil {
 		log.Fatalln("failed to write json data: ", err)
 	}
 
+	log.Printf("saved at %s\n", filepath)
 }

@@ -16,16 +16,6 @@ sources:
     type: "rss"
     url: "https://feeds.folha.uol.com.br/folha/mundo/rss091.xml"
 
-  # ESTADÃO
-  - name: "Estadão - Arte e Lazer"
-    type: "rss"
-    url: "http://www.estadao.com.br/rss/arteelazer.xml"
-
-  # O GLOBO
-  - name: "O Globo - Cultura"
-    type: "rss"
-    url: "http://oglobo.globo.com/rss/plantaocultura.xml"
-
   # G1
   - name: "G1 - Pop & Arte"
     type: "rss"
@@ -35,14 +25,6 @@ sources:
   - name: "Catraca Livre - Agenda SP"
     type: "rss"
     url: "https://catracalivre.com.br/feed/"
-
-  - name: "Guia da Semana - São Paulo"
-    type: "html"
-    url: "https://www.guiadasemana.com.br/sao-paulo/feed"
-
-  - name: "Omelete - Cultura Pop"
-    type: "rss"
-    url: "https://www.omelete.com.br/feed"
 
   - name: "Revista Cult"
     type: "rss"
@@ -58,27 +40,15 @@ sources:
 
   # INSTITUIÇÕES CULTURAIS SP
   - name: "MASP - Museu de Arte"
-    type: "rss"
+    type: "html"
     url: "https://masp.org.br/feed"
 
   - name: "Pinacoteca - São Paulo"
     type: "rss"
     url: "https://pinacoteca.org.br/feed/"
 
-  - name: "TV Cultura"
-    type: "rss"
-    url: "https://cultura.uol.com.br/feed/"
-
-  # AGÊNCIA BRASIL - CULTURA
-  - name: "Agência Brasil - Cultura"
-    type: "rss"
-    url: "https://agenciabrasil.ebc.com.br/cultura/feed"
-
   # EXTRAS PARA AGENDA CULTURAL SP
   - name: "Jornal da USP"
     type: "rss"
     url: "https://jornal.usp.br/feed/"
 
-  - name: "Secretaria Municipal de Cultura SP"
-    type: "rss"
-    url: "https://www.prefeitura.sp.gov.br/cidade/secretarias/cultura/noticias/feed/"

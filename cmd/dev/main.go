@@ -18,7 +18,7 @@ func main() {
 		log.Fatalln("failed to load config: ", err)
 	}
 
-	endpoints := config.Endpoints()
+	endpoints := config.XMLEndpoints()
 
 	fetcher := fetcher.NewClient(
 		fetcher.WithMaxBytes(5 * 1024 * 1024),

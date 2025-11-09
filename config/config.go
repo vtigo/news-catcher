@@ -49,9 +49,12 @@ func (c *Config) loadConfigFile(path string) error {
 	return nil
 }
 
-func (c *Config) Endpoints() []string {
+func (c *Config) XMLEndpoints() []string {
 	endpoints := make([]string, 0)
 	for _, source := range c.Sources {
+		if source.Type != RSS {
+			continue
+		}
 		endpoints = append(endpoints, source.URL)
 	}
 	return endpoints

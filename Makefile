@@ -3,9 +3,6 @@
 # Binary names
 BINARY_DIR=bin
 DEV_BINARY=$(BINARY_DIR)/dev
-API_BINARY=$(BINARY_DIR)/api
-FETCH_BINARY=$(BINARY_DIR)/fetch
-CRON_BINARY=$(BINARY_DIR)/cron
 TUI_BINARY=$(BINARY_DIR)/tui
 
 # Go parameters
@@ -19,23 +16,11 @@ GOMOD=$(GOCMD) mod
 
 all: clean build
 
-build: build-dev build-api build-fetch build-cron build-tui
+build: build-dev build-tui
 
 build-dev:
 	@mkdir -p $(BINARY_DIR)
 	$(GOBUILD) -o $(DEV_BINARY) ./cmd/dev
-
-build-api:
-	@mkdir -p $(BINARY_DIR)
-	$(GOBUILD) -o $(API_BINARY) ./cmd/api
-
-build-fetch:
-	@mkdir -p $(BINARY_DIR)
-	$(GOBUILD) -o $(FETCH_BINARY) ./cmd/fetch
-
-build-cron:
-	@mkdir -p $(BINARY_DIR)
-	$(GOBUILD) -o $(CRON_BINARY) ./cmd/cron
 
 build-tui:
 	@mkdir -p $(BINARY_DIR)
@@ -43,15 +28,6 @@ build-tui:
 
 run-dev: build-dev
 	$(DEV_BINARY)
-
-run-api: build-api
-	$(API_BINARY)
-
-run-fetch: build-fetch
-	$(FETCH_BINARY)
-
-run-cron: build-cron
-	$(CRON_BINARY)
 
 run-tui: build-tui
 	$(TUI_BINARY)
@@ -78,14 +54,8 @@ help:
 	@echo "  all         - Clean and build all binaries"
 	@echo "  build       - Build all binaries"
 	@echo "  build-dev   - Build dev binary"
-	@echo "  build-api   - Build api binary"
-	@echo "  build-fetch - Build fetch binary"
-	@echo "  build-cron  - Build cron binary"
 	@echo "  build-tui   - Build tui binary"
 	@echo "  run-dev     - Build and run dev binary"
-	@echo "  run-api     - Build and run api binary"
-	@echo "  run-fetch   - Build and run fetch binary"
-	@echo "  run-cron    - Build and run cron binary"
 	@echo "  run-tui     - Build and run tui binary"
 	@echo "  test        - Run tests"
 	@echo "  fmt         - Format code"

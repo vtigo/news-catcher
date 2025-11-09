@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"github.com/vtigo/news-catcher/config"
@@ -13,7 +14,11 @@ import (
 )
 
 func main() {
-	config, err := config.NewConfig("config.yaml")
+	if len(os.Args) != 2 {
+		log.Fatalln("usage: dev <config.yaml>")
+	}
+
+	config, err := config.NewConfig(os.Args[1])
 	if err != nil {
 		log.Fatalln("failed to load config: ", err)
 	}

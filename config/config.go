@@ -6,37 +6,53 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// SourceType represents the type of content source
 type SourceType string
 
 const (
-	SourceTypeRSS SourceType = "rss"
-	SourceTypeApi SourceType = "api"
+	RSS  SourceType = "rss"
+	ATOM SourceType = "atom"
+	JSON SourceType = "json"
+	HTML SourceType = "html"
 )
 
-// Source represents a news source configuration
 type Source struct {
-	Name string     `yaml:"name"`
-	Type SourceType `yaml:"type"`
-	URL  string     `yaml:"url"`
+	Name string
+	Type SourceType
+	URL  string
 }
 
-// Config represents the application configuration
 type Config struct {
-	Sources []Source `yaml:"sources"`
+	ConfigFilePath string
+	Sources        []Source
 }
 
-// LoadConfig loads configuration from a YAML file
-func LoadConfig(filename string) (*Config, error) {
-	data, err := os.ReadFile(filename)
+func NewConfig(configFilePath string) (*Config, error) {
+	var config = &Config{}
+	err := config.loadConfigFile(configFilePath)
 	if err != nil {
 		return nil, err
 	}
+	return config, nil
+}
 
-	var config Config
-	if err := yaml.Unmarshal(data, &config); err != nil {
-		return nil, err
+func (c *Config) loadConfigFile(path string) error {
+	configFile, err := os.ReadFile(path)
+	if err != nil {
+		return err
 	}
 
-	return &config, nil
+	err = yaml.Unmarshal(configFile, c)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (c *Config) Endpoints() []string {
+	endpoints := make([]string, 0)
+	for _, source := range c.Sources {
+		endpoints = append(endpoints, source.URL)
+	}
+	return endpoints
 }

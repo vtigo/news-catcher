@@ -6,18 +6,19 @@ import (
 	"log"
 	"time"
 
+	"github.com/vtigo/news-catcher/config"
 	"github.com/vtigo/news-catcher/fetcher"
 	"github.com/vtigo/news-catcher/rss"
 	"github.com/vtigo/news-catcher/storage"
 )
 
-// TODO: pegar o endpoint do arquivo de config
-
 func main() {
-	endpoints := []string{
-		"https://revistacult.uol.com.br/feed/",
-		"https://feeds.folha.uol.com.br/poder/rss091.xml",
+	config, err := config.NewConfig("config.yaml")
+	if err != nil {
+		log.Fatalln("failed to load config: ", err)
 	}
+
+	endpoints := config.Endpoints()
 
 	fetcher := fetcher.NewClient(
 		fetcher.WithMaxBytes(5 * 1024 * 1024),
@@ -78,5 +79,4 @@ func main() {
 	}
 
 	log.Printf("saved at %s\n", filepath)
-
 }

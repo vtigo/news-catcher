@@ -8,9 +8,6 @@ import (
 	tea "charm.land/bubbletea/v2"
 )
 
-// TODO: fix bug where the cursor in viewStateFeed
-// can only browse the first two items of the array
-
 // Current rendered view
 type viewState int
 

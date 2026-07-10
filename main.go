@@ -89,6 +89,8 @@ func (m rootModel) updateMenu(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 		return m, tea.Quit
 	case "n":
 		// TODO: add new feed - input: nome e endpoint
+	case "f":
+		// TODO: fetch all feeds
 	case "up", "k":
 		if m.menuModel.cursor > 0 {
 			m.menuModel.cursor--

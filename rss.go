@@ -30,6 +30,10 @@ type RssFeed struct {
 	Fetched  bool
 }
 
+// RssFeedInit builds the RssFeed struct and checks if there
+// is any stored data with the name given to the feed. If there is,
+// it loads the stored items into the struct. If it doesn't, it
+// fetches the configured endpoint and stores it.
 func RssFeedInit(name, endpoint string) (*RssFeed, error) {
 	feed := &RssFeed{
 		Name:     name,
@@ -81,6 +85,9 @@ func (f *RssFeed) Fetch() error {
 	return nil
 }
 
+// Store marshalls the feed into a xml and stores it as
+// a xml file at ./storage/{f.Name}.xml. It creates the
+// directory if it does not exist.
 func (f *RssFeed) Store() error {
 	// TODO: salvar em caminho absoluto
 	document := rssDocument{
@@ -97,16 +104,16 @@ func (f *RssFeed) Store() error {
 	return os.WriteFile(fmt.Sprintf("./storage/%s.xml", f.Name), data, 0644)
 }
 
+// Load reads reads the file at ./storage/{f.Name}.xml and
+// loads the items into the struct.
 func (f *RssFeed) Load() error {
-	// TODO: carregar o struct à partir do arquivo
-	// gerado por f.Store()
 	file, err := os.Open(fmt.Sprintf("./storage/%s.xml", f.Name))
 	if err != nil {
 		return err
 	}
-	var doc rssDocument
 	decoder := xml.NewDecoder(file)
 	decoder.CharsetReader = charset.NewReaderLabel
+	var doc rssDocument
 	if err = decoder.Decode(&doc); err != nil {
 		return err
 	}

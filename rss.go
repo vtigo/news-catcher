@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"encoding/xml"
 	"errors"
 	"fmt"
@@ -9,6 +10,56 @@ import (
 
 	"golang.org/x/net/html/charset"
 )
+
+const feedConfigsPath = "./storage/feeds.json"
+
+// feedConfig is a persisted feed entry (name + endpoint) in the registry.
+type feedConfig struct {
+	Name     string `json:"name"`
+	Endpoint string `json:"endpoint"`
+}
+
+// LoadFeedConfigs reads the feed registry. A missing file is an empty registry.
+func LoadFeedConfigs() ([]feedConfig, error) {
+	data, err := os.ReadFile(feedConfigsPath)
+	if errors.Is(err, os.ErrNotExist) {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+	var configs []feedConfig
+	if err := json.Unmarshal(data, &configs); err != nil {
+		return nil, err
+	}
+	return configs, nil
+}
+
+// SaveFeedConfigs writes the feed registry, creating ./storage if needed.
+func SaveFeedConfigs(configs []feedConfig) error {
+	data, err := json.MarshalIndent(configs, "", "  ")
+	if err != nil {
+		return err
+	}
+	if err := os.MkdirAll("./storage", 0755); err != nil {
+		return err
+	}
+	return os.WriteFile(feedConfigsPath, data, 0644)
+}
+
+// AddFeedConfig appends a feed to the registry, rejecting duplicate names.
+func AddFeedConfig(name, endpoint string) error {
+	configs, err := LoadFeedConfigs()
+	if err != nil {
+		return err
+	}
+	for _, c := range configs {
+		if c.Name == name {
+			return fmt.Errorf("feed %q já existe", name)
+		}
+	}
+	return SaveFeedConfigs(append(configs, feedConfig{Name: name, Endpoint: endpoint}))
+}
 
 type rssDocument struct {
 	XMLName xml.Name  `xml:"rss"`

@@ -26,6 +26,14 @@ type openFeedMsg struct {
 type sourceAddedMsg struct{ feed RssFeed }
 type backToMenuMsg struct{}
 
+// Fetch messages: emitted by background fetch commands and the spinner ticker.
+type feedFetchedMsg struct {
+	name  string
+	items []RssItem
+	err   error
+}
+type spinnerTickMsg struct{}
+
 type rootModel struct {
 	state     viewState
 	menuModel menuModel
@@ -71,6 +79,12 @@ func (m rootModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.state = viewStateMenu
 	case backToMenuMsg:
 		m.state = viewStateMenu
+	case feedFetchedMsg:
+		m.menuModel = m.menuModel.applyFetchResult(msg)
+	case spinnerTickMsg:
+		var cmd tea.Cmd
+		m.menuModel, cmd = m.menuModel.onSpinnerTick()
+		return m, cmd
 	}
 
 	return m, nil
@@ -88,9 +102,6 @@ func (m rootModel) View() tea.View {
 }
 
 func main() {
-	// TODO: botão para refetch. checar a data de criação do arquivo de
-	// cache; caso não tenha sido criado hoje, fazer o refetch automaticamente.
-
 	configs, err := LoadFeedConfigs()
 	if err != nil {
 		fmt.Println(err)

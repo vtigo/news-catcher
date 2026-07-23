@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"os/exec"
+	"runtime"
 	"strings"
 
 	tea "charm.land/bubbletea/v2"
@@ -26,10 +28,31 @@ func feedModelInit(name string, items []RssItem) feedModel {
 	}
 }
 
+// openLinkCmd abre a url no navegador padrão do sistema, sem esperar
+// pelo processo e sem reportar erro de volta para a UI.
+func openLinkCmd(url string) tea.Cmd {
+	return func() tea.Msg {
+		switch runtime.GOOS {
+		case "windows":
+			exec.Command("rundll32", "url.dll,FileProtocolHandler", url).Start()
+		case "darwin":
+			exec.Command("open", url).Start()
+		default:
+			exec.Command("xdg-open", url).Start()
+		}
+		return nil
+	}
+}
+
 func (m feedModel) Update(msg tea.KeyPressMsg) (feedModel, tea.Cmd) {
 	switch msg.String() {
 	case "q", "esc", "backspace":
 		return m, func() tea.Msg { return backToMenuMsg{} }
+	case "e", "space":
+		if len(m.items) == 0 {
+			break
+		}
+		return m, openLinkCmd(m.items[m.cursor].Link)
 	case "up", "k":
 		if m.cursor > 0 {
 			m.cursor--
@@ -83,6 +106,7 @@ func (m feedModel) View() string {
 	}
 
 	buffer.WriteString("\n")
+	buffer.WriteString("e|space: abrir no navegador\n")
 	buffer.WriteString("esc|q: voltar\n")
 
 	return buffer.String()
